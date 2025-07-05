@@ -19,14 +19,26 @@ This project demonstrates how to build a production-ready deployment pipeline fo
 
 ```bash
 .
+├── core/                      # Django app folder
+├── myproject/                 # Django project settings
+├── venv/                      # Python virtual environment (ignored in Git)
+├── db.sqlite3                 # Local dev DB (ignored in prod)
+├── manage.py                  # Django CLI entry point
 ├── docker/
-│   └── Dockerfile
+│   └── Dockerfile             # Docker build file
 ├── terraform/
-│   ├── main.tf
-│   ├── variables.tf
-│   ├── outputs.tf
-│   └── ...
-└── README.md
+│   ├── main.tf                # Root orchestrator (includes or references others)
+│   ├── variables.tf           # All variable declarations
+│   ├── outputs.tf             # Output ALB DNS, ECS info, etc.
+│   ├── vpc.tf                 # VPC, subnets, IGW
+│   ├── alb.tf                 # ALB, target group, listener
+│   ├── ecs.tf                 # ECS cluster, task definition, service
+│   ├── iam.tf                 # ECS task role and policies
+│   ├── ecr.tf                 # ECR repository
+│   ├── endpoints.tf           # VPC Interface Endpoints
+│   └── security.tf            # Security groups for ALB and ECS
+├── README.md                  # Project documentation
+
 ```
 
 ##  Dockerization

@@ -36,7 +36,7 @@ jobs:
 
 
   terraform-deploy:
-    needs: docker-build-push
+    needs: build-test
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -61,7 +61,7 @@ jobs:
 
 
   docker-build-push:
-    needs: build-test
+    needs: terraform-deploy
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code

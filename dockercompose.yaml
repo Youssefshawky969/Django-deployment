@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+  postgres_db:
+    image: postgres:15  # latest stable is 15; version 17 doesn't exist (yet)
+    container_name: postgres-db
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    networks:
+      - mynetwork
+
+  django-web:
+    build: .
+    command: gunicorn myproject.wsgi:application --bind 0.0.0.0:8000
+    container_name: django-web
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres_db
+    environment:
+      POSTGRES_HOST: postgres_db
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    env_file:
+      - .env
+    networks:
+      - mynetwork
+
+volumes:
+  postgres_data:
+
+networks:
+  mynetwork:

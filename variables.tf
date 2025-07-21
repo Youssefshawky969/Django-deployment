@@ -7,7 +7,3 @@ variable "app_name" {
 }
 
 
-variable "image_tag" {
-  description = "Tag of the Docker image in ECR"
-  type        = string
-}

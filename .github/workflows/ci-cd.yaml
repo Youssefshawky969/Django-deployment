@@ -78,8 +78,6 @@ jobs:
         run: terraform plan
 
       - name: Terraform Apply
-        env:
-          TF_VAR_image_tag: ${{ github.sha }}
         run: terraform apply -auto-approve
 
 

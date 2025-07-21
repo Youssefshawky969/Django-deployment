@@ -14,7 +14,7 @@ resource "aws_ecs_task_definition" "django" {
   container_definitions = jsonencode([
     {
       name      = var.app_name
-      image     = "${aws_ecr_repository.django.repository_url}:${{ github.sha }}"
+      image     = "${aws_ecr_repository.django.repository_url}:$IMAGE_TAG"
       essential = true
       portMappings = [{
         containerport = 8000

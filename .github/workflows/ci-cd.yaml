@@ -78,7 +78,7 @@ jobs:
         run: terraform plan
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve -var="image_tag=${{ github.sha }}"
+        run: terraform apply -auto-approve
 
 
   docker-build-push:
@@ -101,8 +101,8 @@ jobs:
 
       - name: Build, Tag, and Push Docker Image
         run: |
-          docker build -t $ECR_REPOSITORY:$IMAGE_TAG .
-          docker tag $ECR_REPOSITORY:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
+          docker build -t $ECR_REPOSITORY .
+          docker tag $ECR_REPOSITORY:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY
 
       - name: Push Docker image to Amazon ECR
         run: |
@@ -110,30 +110,3 @@ jobs:
       
       - name: Set ECR_REPO_URI
         run: echo "ECR_REPO_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}" >> $GITHUB_ENV
-
-  terraform-destroy-on-failure:
-    name: Destroy Infra on Failure
-    needs: [terraform-deploy, docker-build-push]
-    if: failure()
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: .
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.8.2
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Terraform Destroy
-        run: terraform destroy -auto-approve

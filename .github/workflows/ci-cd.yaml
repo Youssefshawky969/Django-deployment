@@ -102,7 +102,7 @@ jobs:
       - name: Build, Tag, and Push Docker Image
         run: |
           docker build -t $ECR_REPOSITORY .
-          docker tag $ECR_REPOSITORY:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY
+          docker tag $ECR_REPOSITORY $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY
 
       - name: Push Docker image to Amazon ECR
         run: |
